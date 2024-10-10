@@ -2,7 +2,7 @@ import api from '@types/api';
 import MemoraConfig from '@types/MemoraConfig';
 import { useEffect, useRef, useState } from 'react';
 
-const useSlideTimeout = (nextSlide: () => void, isVideoPlayingRef: React.RefObject<boolean>) => {
+const useSlideTimeout = (nextSlide: () => void) => {
     const [slideTimeout, setSlideTimeout] = useState(10000);
     
     useEffect(() => {
@@ -15,16 +15,15 @@ const useSlideTimeout = (nextSlide: () => void, isVideoPlayingRef: React.RefObje
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const resetTimeout = () => {
+        console.log("clear timeout")
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
     };
 
     useEffect(() => {
-        if (!isVideoPlayingRef.current ) {
-            resetTimeout();
-            timeoutRef.current = setTimeout(nextSlide, slideTimeout);
-        }
+        resetTimeout();
+        timeoutRef.current = setTimeout(nextSlide, slideTimeout);
 
         return () => resetTimeout();
     }, [nextSlide]);

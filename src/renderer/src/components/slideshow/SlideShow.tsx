@@ -8,6 +8,7 @@ import useTransformation from './hooks/useTransformation';
 import { Transformation } from '@types/MemoraConfig';
 import { InformationDisplay } from './InformationDisplay';
 import useSlideshowControls from './hooks/useSlideshowControls';
+import { isVideo } from '../isVideo';
 
 
 type SlideShowProps = {
@@ -23,14 +24,13 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
     }
 
     const isAnimating = useRef<boolean>(false);
-    const isVideoPlayingRef = useRef<boolean>(false);
     const visibleIndex = useRef<number>(1);
 
     const [currentIndex, setCurrentIndex] = useState(1);
     const [showInformation, setShowInformation] = useState(false);
     const [displayedImages, setDisplayedImages] = useState<string[]>([]);
 
-    const resetTimeout = useSlideTimeout(() => nextSlide(), isVideoPlayingRef);
+    const resetTimeout = useSlideTimeout(() => nextSlide());
     const {getTransformation} = useTransformation(transformation);
 
     const props = useSpring({
@@ -81,11 +81,9 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
         error("Error occured while loading media")
         isAnimating.current = false;
         renderDisplayedImages();
-        isVideoPlayingRef.current = false;
         nextSlide();
     };
     const handleVideoEnd = () => {
-        isVideoPlayingRef.current = false;
         nextSlide();
     };
 
@@ -97,10 +95,14 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
         showInformation,
     });
 
+    function currentImage(): string {
+        return images[currentIndex + 1];
+    }
+
     return (
         <div className="slideshow">
             <InformationDisplay 
-                imageSrc={images[currentIndex + 1]}
+                imageSrc={currentImage()}
                 show={showInformation}
             />
 
@@ -120,7 +122,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
                             onError={errorHandler}
                             onVideoEnd={handleVideoEnd}
                             onVideoPlay={() => {
-                                isVideoPlayingRef.current = true;
+                                // Stop the transition of 
                                 resetTimeout();
                             }}
                             playVideo={() => {
@@ -132,7 +134,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
             </div>
             {showProgressBar ?
                 <div style={{ position: 'absolute', bottom: '0', width: '100%' }}>
-                    <SlideShowTimer isVideoPlayingRef={isVideoPlayingRef} nextSlide={nextSlide} />
+                    <SlideShowTimer showsVideo={isVideo(currentImage())} nextSlide={nextSlide} />
                 </div>
                 : <></>
             }

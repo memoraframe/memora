@@ -5,10 +5,10 @@ import React, { useState, useEffect, useRef } from 'react';
 
 type ImageProps = {
     nextSlide: () => void,
-    isVideoPlayingRef: React.RefObject<boolean>
+    showsVideo: boolean
 };
 
-const SlideShowTimer: React.FC<ImageProps> = ({ nextSlide, isVideoPlayingRef }) => {  
+const SlideShowTimer: React.FC<ImageProps> = ({ nextSlide, showsVideo }) => {  
     const [slideTimeout, setSlideTimeout] = useState(10000);
     const [slideInterval, setSlideInterval] = useState(0); 
     const intervalDuration = 1000; 
@@ -31,7 +31,7 @@ const SlideShowTimer: React.FC<ImageProps> = ({ nextSlide, isVideoPlayingRef }) 
     };
 
     const startTimer = () => {
-        if (!isVideoPlayingRef.current) {
+        if (!showsVideo) {
             intervalRef.current = setInterval(() => {
                 intervalCountRef.current += intervalDuration;
 
@@ -47,13 +47,13 @@ const SlideShowTimer: React.FC<ImageProps> = ({ nextSlide, isVideoPlayingRef }) 
                 // Check if the slide timeout has been reached
                 if (intervalCountRef.current >= slideTimeout) {
                     resetTimeout(); // Reset after slide change
-                    nextSlide(); // Move to the next slide
                 }
             }, intervalDuration);
         }
     }
 
     useEffect(() => {
+        // When the nextslide is called, restart the timer here.
         resetTimeout();
         startTimer();
 
@@ -65,10 +65,13 @@ const SlideShowTimer: React.FC<ImageProps> = ({ nextSlide, isVideoPlayingRef }) 
         };
     }, [nextSlide]);
 
+    if(showsVideo) {
+        return <></>
+    }
+    
     return (
-
         <Flex gap="small" vertical>
-        <Progress percent={slideInterval} type="line" showInfo={false} />
+            <Progress percent={slideInterval} type="line" showInfo={false} />
         </Flex>
     );
 };
