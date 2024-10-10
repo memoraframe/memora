@@ -1,0 +1,62 @@
+import { useEffect, useState } from 'react';
+import { notification } from "antd";
+import SlideShow from '../slideshow/SlideShow';
+import api from '@types/api';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@renderer/routes';
+import { error } from 'electron-log';
+import MemoraConfig, { Transformation } from '@types/MemoraConfig';
+import LoadingScreen from './LoadingScreen';
+import _ from 'lodash';
+
+function SlideShowScreen(): JSX.Element {
+    const navigate = useNavigate();
+
+    const [config, setConfig] = useState<MemoraConfig>();
+    const [imagePaths, setImagePaths] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+  
+    // UseEffect to load config
+    useEffect(() => {
+      api.getConfig().then((config: MemoraConfig) => {
+        setConfig(config);
+      });
+    }, []);
+
+    useEffect(() => {
+        const fetchImagePaths = async () => {
+            if (config && config.mediaDirectory) {
+                try {
+                    const paths = await api.getImages();
+                    setImagePaths(_.shuffle(paths));
+                } catch (e) {
+                    notification.error({
+                        message: 'Fetching media failed',
+                        description: 'Configuration is not correct, could not read media directory',
+                    });
+                    error("Could not fetch images:" + e.message);
+                    navigate(ROUTES.SETTINGS);
+                }
+            }
+        };
+    
+        fetchImagePaths();
+    }, [config]);
+    
+
+    useEffect(() => {
+        if(imagePaths.length > 0 ){
+            setIsLoading(false);
+        }
+    }, [imagePaths]);
+
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
+    
+    return (
+        <SlideShow images={imagePaths} showProgressBar={config?.showProgressBar ?? false} transformation={config?.transformation ?? Transformation.SLIDEX} />
+    );
+}
+
+export default SlideShowScreen;

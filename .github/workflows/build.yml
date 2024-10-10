@@ -1,0 +1,61 @@
+name: Build Memora frame App for Linux ARM64
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-linux-arm:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x  
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update version
+        run: |
+          NEW_VERSION="0.0.$(git rev-list --count HEAD)"
+          npm version $NEW_VERSION --no-git-tag-version
+
+      - name: Build for Linux ARM64
+        run: npm run build:linuxarm
+
+      # - name: Archive build output
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: linux-arm64-build
+      #     path: dist/  # Specify the output directory of the build
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.sha }}
+      #     release_name: "Linux ARM64 Build"
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload Release Asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: dist/*.AppImage  # Adjust to your specific build output format
+      #     asset_name: app-linux-arm64.AppImage  # Adjust to your desired file name
+      #     asset_content_type: application/octet-stream

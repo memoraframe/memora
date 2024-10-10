@@ -1,0 +1,236 @@
+@import './base.css';
+@import 'antd/dist/reset.css';
+
+/* // unused? */
+.body_slideshow {
+  display: flex;
+  justify-content: center;
+}
+
+.slideshow {
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.settingsscreen {
+  padding-top: 10px;
+}
+.settingsscreen .card {
+  margin: 12px;
+}
+
+
+/* Full-screen Container for Loading Page */
+.containerloading {
+  padding-top: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-screen {
+  text-align: center;
+  color: #ffffff;
+  /* Light text color for dark mode */
+}
+
+.spinner {
+  border: 16px solid #333;
+  /* Dark grey border */
+  border-top: 16px solid #1e90ff;
+  /* Bright blue for visibility in dark mode */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/** Slide in and slide out the settings bar on the slideshow page **/
+.slideshow-settings {
+  position: absolute;
+  top: 0px;
+  height: 25%;
+  width: 100%;
+  z-index: 256;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slideshow-settings.hidden {
+  opacity: 0;
+  transform: translateY(-25%);
+  /* or any value you prefer for the hidden state */
+}
+
+.information-bar {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  height: 25%;
+  min-height: 100%;
+}
+
+.information-bar-inner {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  white-space: nowrap;
+  padding: 10px;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  /* For Firefox */
+  -ms-overflow-style: none;
+  /* For Internet Explorer and Edge */
+}
+
+.settings-button {
+  display: 'flex';
+  align-items: 'center';
+  justify-content: 'center';
+  height: 100%;
+  width: 100%;
+}
+
+/***************************/
+
+/** Slide in and slide out the settings bar on the slideshow page **/
+.thumbnail-carrousel-settings {
+  position: absolute;
+  bottom: 0px;
+  height: 25%;
+  background-color: #000;
+  width: 100%;
+  z-index: 256;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.thumbnail-carrousel-settings.hidden {
+  opacity: 0;
+  transform: translateY(25%);
+  /* or any value you prefer for the hidden state */
+}
+
+/***************************/
+
+
+
+/*************************/
+
+.thumbnail-carousel {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  height: 25%;
+  min-height: 100%;
+}
+
+.thumbnail-carousel-inner {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  white-space: nowrap;
+  padding: 10px;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  /* For Firefox */
+  -ms-overflow-style: none;
+  /* For Internet Explorer and Edge */
+}
+
+.thumbnail-carousel-inner::-webkit-scrollbar {
+  display: none;
+  /* For Chrome, Safari, and Opera */
+}
+
+.thumbnail {
+  width: auto;
+  margin: 0 5px;
+}
+
+.thumbnail img {
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+
+.thumbnail div {
+  width: auto;
+  min-width: 300px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/** Carousel end **/
+/*************************/
+
+.carousel-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.carousel-images {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.carousel-image {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.carousel-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/** For media screen **/
+
+.mediascreen {
+  overflow: hidden; 
+  padding: 10px;
+}
+
+.mediascreen .directory {
+  height: 300px;
+}
+.mediascreen .image {
+  height: 300px;
+}

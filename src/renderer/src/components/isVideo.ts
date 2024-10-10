@@ -1,0 +1,1 @@
+export const isVideo = (src: string) => /\.(mp4|webm|ogg|avi|mov)$/.test(src.toLowerCase());
