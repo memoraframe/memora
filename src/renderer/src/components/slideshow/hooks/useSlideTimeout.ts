@@ -15,7 +15,6 @@ const useSlideTimeout = (nextSlide: () => void) => {
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const resetTimeout = () => {
-        console.log("clear timeout")
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
