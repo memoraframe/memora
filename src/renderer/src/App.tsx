@@ -36,7 +36,7 @@ function App(): JSX.Element {
       <Router>
         <Routes>
           <Route path={ROUTES.HOME} element={
-            <MediaScreen />
+            <SlideShowScreen />
           } />
           <Route path={ROUTES.MEDIA} element={
             <MediaScreen />

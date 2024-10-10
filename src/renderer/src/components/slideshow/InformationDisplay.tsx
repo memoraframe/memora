@@ -13,7 +13,7 @@ export const InformationDisplay: React.FC<{ imageSrc: string, show: boolean }> =
         <div className={`slideshow-settings ${show ? '' : 'hidden'}`}>
             <div className="information-bar">
                 <div className="information-bar-inner">
-                    <Title>{image.name}</Title>
+                    <Title>{image.name.replace("_", " ")}</Title>
                 </div>
             </div>
         </div>

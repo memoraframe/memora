@@ -66,11 +66,15 @@ const MediaScreen: React.FC<{}> = () => {
             }
         }
     };
+
     const close = () => {
-        console.log("BOINK")
         navigate(ROUTES.HOME);
     };
 
+    const goTo = (src: string) => {
+        navigate(ROUTES.HOME + "?src=" + src);
+    };
+    
     const handleDirectoryClick = (directory: string) => {
         setCurrentDirectory(`${currentDirectory}/${directory}`);
     };
@@ -151,6 +155,7 @@ const MediaScreen: React.FC<{}> = () => {
                     <Col span={8} key={index} style={{ marginBottom: 16 }}>
                         <Card
                             hoverable
+                            onClick={() => goTo(item)}
                             className='media-item'
                             cover=
                             {isVideo(item) ? (

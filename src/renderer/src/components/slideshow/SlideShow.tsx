@@ -15,11 +15,12 @@ type SlideShowProps = {
     images: string[];
     showProgressBar: boolean;
     transformation: Transformation;
+    selectedImage: string | null
 };
 
-const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transformation }) => {
+const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transformation, selectedImage }) => {
     // ensure errors are not here.
-    if(images.length == 0){
+    if (images.length == 0) {
         return <></>
     }
 
@@ -31,7 +32,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
     const [displayedImages, setDisplayedImages] = useState<string[]>([]);
 
     const resetTimeout = useSlideTimeout(() => nextSlide());
-    const {getTransformation} = useTransformation(transformation);
+    const { getTransformation } = useTransformation(transformation);
 
     const props = useSpring({
         immediate: !isAnimating.current,
@@ -46,8 +47,23 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
     });
 
     useEffect(() => {
-        if(images.length > 0) {
-            renderDisplayedImages();
+        if (images.length > 0) {
+            if (selectedImage) {
+                for (let i = 0; i < images.length; i++) {
+                    if (images[i] === selectedImage) {
+                        setCurrentIndex(i - 1)
+                        const newImages = [
+                            images[i - 1 % images.length],
+                            images[(i) % images.length],
+                            images[(i + 1) % images.length],
+                        ];
+                        setDisplayedImages(newImages);
+                        visibleIndex.current = 1;
+                    }
+                }
+            } else {
+                renderDisplayedImages();
+            }
         }
     }, []);
 
@@ -101,17 +117,17 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
 
     return (
         <div className="slideshow">
-            <InformationDisplay 
+            <InformationDisplay
                 imageSrc={currentImage()}
                 show={showInformation}
             />
 
             <div className="carousel-container" {...handlers}>
                 <animated.div className="carousel-images"
-                  style={{
-                    ...props,
-                    flexDirection: transformation === Transformation.SLIDEY ? "column" : "row",
-                  }}
+                    style={{
+                        ...props,
+                        flexDirection: transformation === Transformation.SLIDEY ? "column" : "row",
+                    }}
                 >
                     {displayedImages.map((image, i) => (
                         <Media

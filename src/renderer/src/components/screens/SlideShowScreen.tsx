@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { notification } from "antd";
 import SlideShow from '../slideshow/SlideShow';
 import api from '@types/api';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTES } from '@renderer/routes';
 import { error } from 'electron-log';
 import MemoraConfig, { Transformation } from '@types/MemoraConfig';
@@ -12,6 +12,12 @@ import _ from 'lodash';
 function SlideShowScreen(): JSX.Element {
     const navigate = useNavigate();
 
+    const location = useLocation();
+  
+    // Using URLSearchParams to parse the query string
+    const queryParams = new URLSearchParams(location.search);
+    const selectedImage = queryParams.get('src'); // 'value'
+    
     const [config, setConfig] = useState<MemoraConfig>();
     const [imagePaths, setImagePaths] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +61,7 @@ function SlideShowScreen(): JSX.Element {
     }
     
     return (
-        <SlideShow images={imagePaths} showProgressBar={config?.showProgressBar ?? false} transformation={config?.transformation ?? Transformation.SLIDEX} />
+        <SlideShow images={imagePaths} selectedImage={selectedImage} showProgressBar={config?.showProgressBar ?? false} transformation={config?.transformation ?? Transformation.SLIDEX} />
     );
 }
 
