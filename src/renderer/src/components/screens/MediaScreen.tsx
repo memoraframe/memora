@@ -5,6 +5,8 @@ import MemoraConfig from '@types/MemoraConfig';
 import { isDirectory } from '../isDirectory';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@renderer/routes';
+import { ArrowUpOutlined, PictureOutlined, FolderOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { isVideo } from '../isVideo';
 
 const MediaScreen: React.FC<{}> = () => {
     const [currentDirectory, setCurrentDirectory] = useState<string>('');
@@ -80,49 +82,97 @@ const MediaScreen: React.FC<{}> = () => {
                 <Col span={8} style={{ marginBottom: 16 }}>
                     {!isRoot() ? (
                         <Card
-                            className='directory'
+                            className='media-item'
                             hoverable
                             onClick={() => goUp()}
+                            cover={
+                                <div style={{ position: 'relative', height: '100%' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                                        <ArrowUpOutlined
+                                            style={{
+                                                fontSize: 150,
+                                                paddingTop: 50
+                                            }}
+                                        />
+                                        .. (Go Up)
+                                    </div>
+                                </div>
+                            }
                         >
-                            <Card.Meta
-                                title=".. (Go Up)"
-                            />
                         </Card>
                     ) : (
                         <Card
-                            className='directory'
+                            className='media-item'
                             hoverable
                             onClick={() => close()}
+
+                            cover={
+                                <div style={{ position: 'relative', height: '100%' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                                        <PictureOutlined
+                                            style={{
+                                                fontSize: 150,
+                                                paddingTop: 50
+                                            }}
+                                        />
+                                        Slideshow
+                                    </div>
+                                </div>
+                            }
                         >
-                            <Card.Meta
-                                title="Slideshow"
-                            />
                         </Card>
                     )}
                 </Col>
 
-
                 {directories.map((directory, index) => (
                     <Col span={8} key={index} style={{ marginBottom: 16 }}>
                         <Card
-                            className='directory'
+                            className='media-item'
                             hoverable
                             onClick={() => handleDirectoryClick(directory)}
+                            cover={
+                                <div style={{ position: 'relative', height: '100%' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                                        <FolderOutlined
+                                            style={{
+                                                fontSize: 150,
+                                                paddingTop: 50
+                                            }}
+                                        />
+                                        {directory.split('/').pop()}
+                                    </div>
+                                </div>
+                            }
                         >
-                            <Card.Meta
-                                title={directory}
-                            />
                         </Card>
                     </Col>
                 ))}
                 {imagePaths.map((item, index) => (
                     <Col span={8} key={index} style={{ marginBottom: 16 }}>
                         <Card
-                            className='image'
                             hoverable
-                            cover={<img alt={item} src={item} style={{ objectFit: 'cover', height: '100%' }} />}
-                        >
-                        </Card>
+                            className='media-item'
+                            cover=
+                            {isVideo(item) ? (
+                                <div style={{ position: 'relative', height: '100%' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                                        <VideoCameraOutlined
+                                            style={{
+                                                fontSize: 150,
+                                                paddingTop: 50
+                                            }}
+                                        />
+                                        {item.split('/').pop()}
+                                    </div>
+                                </div>
+                            ) : (
+                                <img
+                                    alt={item}
+                                    src={item}
+                                />
+                            )}
+
+                        />
                     </Col>
                 ))}
 

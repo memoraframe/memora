@@ -228,9 +228,6 @@
   padding: 10px;
 }
 
-.mediascreen .directory {
-  height: 300px;
-}
-.mediascreen .image {
+.mediascreen .media-item {
   height: 300px;
 }
