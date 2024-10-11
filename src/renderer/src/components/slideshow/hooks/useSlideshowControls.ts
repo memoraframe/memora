@@ -24,8 +24,10 @@ const useSlideshowControls = ({
     const handlers = useSwipeable({
         onSwipedLeft: nextSlide,
         onSwipedRight: prevSlide,
-        onTap: () => {
-            setShowInformation(!showInformation);
+        onTap: (event) => {
+            if(event.event.type == "touchend") {
+                setShowInformation(!showInformation);
+            }
         },
         onSwipedDown: () => {
             navigate(ROUTES.SETTINGS);
