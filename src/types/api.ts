@@ -6,7 +6,12 @@ import TestResult from "./TestResult";
 declare global {
     interface Window {
         api: WindowApi;
+        env: EnvironmentVariables
     }
+}
+
+interface EnvironmentVariables {
+    isDev: boolean;
 }
 
 // Define the WindowApi interface as before
@@ -21,4 +26,5 @@ interface WindowApi {
 
 // Assign the api property on the window object
 const api = window.api;
+export const env = window.env;
 export default api;

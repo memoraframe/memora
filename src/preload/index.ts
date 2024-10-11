@@ -20,6 +20,9 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('env', {
+      isDev: process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false
+    })
 
   } catch (error) {
     console.error(error)

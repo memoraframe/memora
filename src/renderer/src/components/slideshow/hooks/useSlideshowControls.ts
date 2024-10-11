@@ -3,6 +3,7 @@ import { ROUTES } from "@renderer/routes";
 import { useSwipeable } from "react-swipeable";
 import useKeyboardNavigation from "./useKeyboardNavigation";
 import { useNavigate } from "react-router-dom";
+import { env } from "@types/api";
 
 type SlideShowControlProps = {
     nextSlide: () => void;
@@ -35,7 +36,7 @@ const useSlideshowControls = ({
         onSwipedUp: () => {
             navigate(ROUTES.MEDIA);
         },
-        trackMouse: true,
+        trackMouse: env.isDev,
     });
 
     return handlers;
