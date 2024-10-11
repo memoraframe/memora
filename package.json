@@ -19,7 +19,7 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "build:linuxarm": "electron-vite build && electron-builder --arm64 --linux"
+    "build:linuxarm": "npm uninstall sharp && npm install --platform=linux --cpu=arm64 --libc=glibc sharp && electron-vite build && electron-builder --arm64 --linux"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
@@ -36,7 +36,6 @@
     "node-cron": "^3.0.3",
     "react-router-dom": "^6.26.1",
     "react-swipeable": "^7.0.1",
-    "sharp": "^0.33.5",
     "webdav": "^5.7.1"
   },
   "devDependencies": {

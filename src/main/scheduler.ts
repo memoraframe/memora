@@ -4,7 +4,6 @@ import { createS3Client } from "./client/createS3Client";
 import { createWebdavClient } from "./client/createWebdavClient";
 import { syncLocalWithS3 } from "./syncLocalWithS3";
 import { syncLocalWithWebdav } from "./syncLocalWithWebdav";
-import { syncThumbnails } from "./syncThumbnails";
 import { isImage } from "./isImage";
 import { promises as fs } from 'fs';
 
@@ -23,13 +22,13 @@ export async function listLocalFiles(localDir: string): Promise<string[]> {
 }
 
 export const scheduler = (config: MemoraConfig) => {
-  syncThumbnails(config.mediaDirectory)
-    .then(() => {
-      log('Finished creating thumbnails');
-    })
-    .catch((e) => {
-      error('Failed creating thumbnails: ' + e)
-    })
+  // syncThumbnails(config.mediaDirectory)
+  //   .then(() => {
+  //     log('Finished creating thumbnails');
+  //   })
+  //   .catch((e) => {
+  //     error('Failed creating thumbnails: ' + e)
+  //   })
 
 
   if (config.s3Config && config.s3Config.s3Enabled) {
