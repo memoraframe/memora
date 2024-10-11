@@ -1,9 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, protocol, nativeImage } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import fs from 'fs';
-import { format } from 'url';
+import { fileURLToPath, format } from 'url';
 import Store from 'electron-store';
 import MemoraConfig, { Transformation } from '../types/MemoraConfig'
 import cron from 'node-cron'
@@ -14,7 +14,6 @@ import { createS3Client } from './client/createS3Client';
 import { isMediaFile } from './isMedia';
 
 const store = new Store();
-
 
 var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
 function createWindow(): void {
@@ -82,7 +81,24 @@ app.whenReady().then(() => {
 
 
   createWindow()
+  
+  const { protocol } = require('electron');
+  const fs = require('fs');
+  const { fileURLToPath } = require('url');
+  
+  protocol.handle("thum", async (request) => {
+    const fileUrl = request.url.replace("thum://", "file://");
+    const filePath = fileURLToPath(fileUrl); 
 
+    try {
+      const imageBuffer = fs.readFileSync(filePath);
+      
+      return new Response(imageBuffer);
+    } catch (error) {
+      return new Response("Image not found", { status: 404 });
+    }
+  });
+  
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -225,28 +241,4 @@ ipcMain.handle('connection:test:webdav', async (_event, config) => {
     console.log(error);
     return { statusCode: 500, message: `WebDAV Connection Test Failed: ${error}` };
   }
-});
-
-
-ipcMain.handle('images:getThumbnail', async (_event, src: string) => {
-  const config = store.get('config', {
-    mediaDirectory: app.getPath('pictures')
-  }) as MemoraConfig;
-
-  // Get the media directory from the config
-  const mediaDirectory = config.mediaDirectory;
-
-  // Check if the source path starts with the media directory
-  if (!src.replace("file://", "").startsWith(mediaDirectory)) {
-    throw new Error('Source path does not start with media directory.');
-  }
-
-  // Get the relative path by removing the media directory
-  const relativePath = src.replace("file://", "").replace(mediaDirectory, '');
-
-  // Create the thumbnail path
-  const thumbnailPath = path.join(config.mediaDirectory, thumbnailDirectory, relativePath);
-
-  // Return the thumbnail path
-  return thumbnailPath;
 });

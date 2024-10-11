@@ -17,7 +17,6 @@ interface EnvironmentVariables {
 // Define the WindowApi interface as before
 interface WindowApi {
     getImages: () => Promise<string[]>;
-    getThumbnail(src: string): Promise<string>;
     setConfig: (config: MemoraConfig) => Promise<void>;
     getConfig: () => Promise<MemoraConfig>;
     connectionTestS3(config: MemoraConfig): Promise<TestResult>;
