@@ -1,9 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, protocol, nativeImage } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import fs from 'fs';
-import { format } from 'url';
+import fs, { readFileSync } from 'fs';
+import { fileURLToPath, format } from 'url';
 import Store from 'electron-store';
 import MemoraConfig, { Transformation } from '../types/MemoraConfig'
 import cron from 'node-cron'
@@ -13,6 +13,7 @@ import { createWebdavClient } from './client/createWebdavClient';
 import { createS3Client } from './client/createS3Client';
 import { isMediaFile } from './isMedia';
 import { log } from 'electron-log/main';
+import sharp from 'sharp';
 
 const store = new Store();
 
@@ -83,7 +84,29 @@ app.whenReady().then(() => {
 
 
   createWindow()
+
   
+  app.whenReady().then(() => {
+    protocol.handle("thum", async (request) => {
+      try {
+        let fileUrl = request.url.replace("thum://", "file://");
+        let filePath = fileURLToPath(fileUrl); // Convert file URL to file path
+        const imageBuffer = readFileSync(filePath);
+
+        const thumbnail = await sharp(imageBuffer)
+          .resize({ width: 300, height: 300, fit: sharp.fit.inside }) 
+          .toBuffer();  
+        return new Response(thumbnail, {
+          headers: { "content-type": "image/png" },
+        });
+      } catch (error) {
+        console.error("Error processing thumbnail:", error);
+        return new Response("Error generating thumbnail", { status: 500 });
+      }
+    });
+  });
+
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -225,4 +248,9 @@ ipcMain.handle('connection:test:webdav', async (_event, config) => {
     console.log(error);
     return { statusCode: 500, message: `WebDAV Connection Test Failed: ${error}` };
   }
+});
+
+
+ipcMain.handle('images:getThumbnail', async (_event, src: string) => {
+ 
 });
