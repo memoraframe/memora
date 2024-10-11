@@ -1,5 +1,6 @@
 import { WebDAVClient } from 'webdav';
-import * as fs from 'fs-extra';
+import { listLocalFiles } from './scheduler';
+import { promises as fs } from 'fs';
 import * as path from 'path';
 
 // Type definitions
@@ -38,21 +39,6 @@ async function getWebdavFileList(webdavClient: WebDAVClient, dir: string): Promi
     return fileList;
 }
 
-// Recursively get all files from a local directory
-async function getLocalFileList(dir: string): Promise<string[]> {
-    let fileList: string[] = [];
-    const files = await fs.readdir(dir, { withFileTypes: true });
-    for (const file of files) {
-        const fullPath = path.join(dir, file.name);
-        if (file.isDirectory()) {
-            fileList = fileList.concat(await getLocalFileList(fullPath));
-        } else {
-            fileList.push(fullPath);
-        }
-    }
-    return fileList;
-}
-
 // Sync function
 export async function syncLocalWithWebdav(
     webdavClient: WebDAVClient,
@@ -64,7 +50,7 @@ export async function syncLocalWithWebdav(
     const webdavFileMap = new Set(webdavFilePaths.map(file => path.relative(webDavSubDir, file)));
 
     // Get all files from local directory
-    const localFilePaths = await getLocalFileList(localDir);
+    const localFilePaths = await listLocalFiles(localDir);
     const localFileMap = new Set(localFilePaths.map(file => path.relative(localDir, file)));
 
     // Download files from WebDAV that are missing locally

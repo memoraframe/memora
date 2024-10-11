@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as stream from 'stream';
 import { createWriteStream } from 'fs';
 import { isMediaFile } from './isMedia';
+import { ensureTrailingSlash, listLocalFiles } from './scheduler';
 
 // List all objects in the S3 bucket within a specific subdirectory
 async function listS3Objects(s3Client: S3Client, bucketName: string, prefix: string): Promise<string[]> {
@@ -32,18 +33,6 @@ async function listS3Objects(s3Client: S3Client, bucketName: string, prefix: str
 }
 
 
-// List all files in the local directory
-async function listLocalFiles(localDir: string): Promise<string[]> {
-    // const files = await fs.readdir(localDir);
-    // return files.map((file) => path.join(localDir, file));
-
-     return (await fs.readdir(localDir, {
-         recursive: true,
-         encoding: 'utf8',
-     }))
-     .filter(f => isMediaFile(f))
-}
-
 // Download a file from S3
 async function downloadFile(s3Client: S3Client, bucketName: string, key: string, localDir: string): Promise<void> {
     const command = new GetObjectCommand({
@@ -70,9 +59,7 @@ async function downloadFile(s3Client: S3Client, bucketName: string, key: string,
     });
 }
 
-const ensureTrailingSlash = (path: string) => {
-    return path.endsWith('/') ? path : path + '/';
-  };
+
 // Remove a local file
 async function removeLocalFile(localDir: string, filePath: string): Promise<void> {
     await fs.unlink(ensureTrailingSlash(localDir) + filePath);

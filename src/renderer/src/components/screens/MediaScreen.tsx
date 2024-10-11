@@ -175,7 +175,7 @@ const MediaScreen: React.FC<{}> = () => {
                                     className='media-item'
                                     alt={item}
                                     src={item}
-                                />
+                                    />
                             )}
 
                         />

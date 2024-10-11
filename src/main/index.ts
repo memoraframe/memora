@@ -1,19 +1,17 @@
-import { app, shell, BrowserWindow, ipcMain, protocol, nativeImage } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import fs, { readFileSync } from 'fs';
-import { fileURLToPath, format } from 'url';
+import fs from 'fs';
+import { format } from 'url';
 import Store from 'electron-store';
 import MemoraConfig, { Transformation } from '../types/MemoraConfig'
 import cron from 'node-cron'
 import { HeadBucketCommand } from '@aws-sdk/client-s3';
-import { scheduler } from './scheduler';
+import { scheduler, thumbnailDirectory } from './scheduler';
 import { createWebdavClient } from './client/createWebdavClient';
 import { createS3Client } from './client/createS3Client';
 import { isMediaFile } from './isMedia';
-import { log } from 'electron-log/main';
-import sharp from 'sharp';
 
 const store = new Store();
 
@@ -84,28 +82,6 @@ app.whenReady().then(() => {
 
 
   createWindow()
-
-  
-  app.whenReady().then(() => {
-    protocol.handle("thum", async (request) => {
-      try {
-        let fileUrl = request.url.replace("thum://", "file://");
-        let filePath = fileURLToPath(fileUrl); // Convert file URL to file path
-        const imageBuffer = readFileSync(filePath);
-
-        const thumbnail = await sharp(imageBuffer)
-          .resize({ width: 300, height: 300, fit: sharp.fit.inside }) 
-          .toBuffer();  
-        return new Response(thumbnail, {
-          headers: { "content-type": "image/png" },
-        });
-      } catch (error) {
-        console.error("Error processing thumbnail:", error);
-        return new Response("Error generating thumbnail", { status: 500 });
-      }
-    });
-  });
-
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -200,6 +176,7 @@ ipcMain.handle('getImages', async () => {
       encoding: 'utf8',
     })
     .filter(f => isMediaFile(f))
+    .filter(f => !f.startsWith(thumbnailDirectory))
     .map(file => format({
         protocol: 'file',
         slashes: true,
@@ -252,5 +229,24 @@ ipcMain.handle('connection:test:webdav', async (_event, config) => {
 
 
 ipcMain.handle('images:getThumbnail', async (_event, src: string) => {
- 
+  const config = store.get('config', {
+    mediaDirectory: app.getPath('pictures')
+  }) as MemoraConfig;
+
+  // Get the media directory from the config
+  const mediaDirectory = config.mediaDirectory;
+
+  // Check if the source path starts with the media directory
+  if (!src.replace("file://", "").startsWith(mediaDirectory)) {
+    throw new Error('Source path does not start with media directory.');
+  }
+
+  // Get the relative path by removing the media directory
+  const relativePath = src.replace("file://", "").replace(mediaDirectory, '');
+
+  // Create the thumbnail path
+  const thumbnailPath = path.join(config.mediaDirectory, thumbnailDirectory, relativePath);
+
+  // Return the thumbnail path
+  return thumbnailPath;
 });
