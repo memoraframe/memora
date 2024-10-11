@@ -5,6 +5,7 @@ import * as stream from 'stream';
 import { createWriteStream } from 'fs';
 import { isMediaFile } from './isMedia';
 import { ensureTrailingSlash, listLocalFiles } from './scheduler';
+import { log, error } from 'electron-log';
 
 // List all objects in the S3 bucket within a specific subdirectory
 async function listS3Objects(s3Client: S3Client, bucketName: string, prefix: string): Promise<string[]> {
@@ -79,10 +80,10 @@ export async function syncLocalWithS3(
     for (const key of s3Keys) {
         if (!localFiles.includes(key)) {
             try {
-                console.log("Downloading file " + key);
+                log("Downloading file " + key);
                 await downloadFile(s3Client, bucketName, key, localDir);
-            } catch (error) {
-                console.error("Something went wrong with downloading: " + error);
+            } catch (e) {
+                error("Something went wrong with downloading: " + e);
             }
         }
     }
@@ -90,7 +91,7 @@ export async function syncLocalWithS3(
     // Remove local files that are not in S3
     for (const localFile of localFiles) {
         if (!s3Keys.includes(localFile)) {
-            console.log("Removing:" + localFile);
+            log("Removing:" + localFile);
             await removeLocalFile(localDir, localFile);
         }
     }

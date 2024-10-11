@@ -2,6 +2,7 @@ import { WebDAVClient } from 'webdav';
 import { listLocalFiles } from './scheduler';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { log } from 'electron-log';
 
 // Type definitions
 interface FileStat {
@@ -59,12 +60,26 @@ export async function syncLocalWithWebdav(
         const localFilePath = path.join(localDir, relativePath);
 
         // Ensure directory structure exists
-        await fs.ensureDir(path.dirname(localFilePath));
+        await fs.mkdir(path.dirname(localFilePath), { recursive: true });
 
         if (!localFileMap.has(relativePath)) {
-            console.log(`Downloading ${webdavFilePath} to ${localFilePath}`);
+            log(`Downloading ${webdavFilePath} to ${localFilePath}`);
             const fileData = await webdavClient.getFileContents(webdavFilePath);
-            await fs.outputFile(localFilePath, fileData);
+
+            // Convert fileData to Buffer if it's an ArrayBuffer
+            let dataToWrite: string | Buffer;
+    
+            if (fileData instanceof ArrayBuffer) {
+                dataToWrite = Buffer.from(fileData); // Convert ArrayBuffer to Buffer
+            } else if (typeof fileData === 'string') {
+                dataToWrite = fileData; // It's already a string
+            } else if (fileData instanceof Buffer) {
+                dataToWrite = fileData; // It's already a Buffer
+            } else {
+                // Handle the ResponseDataDetailed type or any other cases as needed
+                throw new Error('Unsupported file data type');
+            }
+            await fs.writeFile(localFilePath, dataToWrite);
         }
     }
 
@@ -72,8 +87,8 @@ export async function syncLocalWithWebdav(
     for (const localFilePath of localFilePaths) {
         const relativePath = path.relative(localDir, localFilePath);
         if (!webdavFileMap.has(relativePath)) {
-            console.log(`Removing local file ${localFilePath}`);
-            await fs.remove(localFilePath);
+            log(`Removing local file ${localFilePath}`);
+            await fs.unlink(localFilePath);
         }
     }
 }

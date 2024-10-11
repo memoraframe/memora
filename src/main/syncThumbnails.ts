@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import { ensureTrailingSlash, listLocalFiles, thumbnailDirectory } from './scheduler';
 import sharp from 'sharp';
 import path from 'path';
+import { log } from 'electron-log';
 // Delay function that returns a promise that resolves after a specified duration
 function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -10,7 +11,6 @@ function delay(ms: number) {
 
 // Create a thumbnail for a given image source
 async function createThumbnail(src: string): Promise<Buffer | null> {
-    console.log("create thumbnail: " + src);
     try {
         const imageBuffer = await fs.readFile(src);
         const thumbnail = await sharp(imageBuffer)
@@ -35,7 +35,7 @@ export async function syncThumbnails(localDir: string): Promise<void> {
         } catch {
             const thumbnailBuffer = await createThumbnail(ensureTrailingSlash(localDir) + file);
             if (thumbnailBuffer) {
-                console.log("save thumbnail: " + thumbnailPath);
+                log("save thumbnail: " + thumbnailPath);
                 await fs.mkdir(path.dirname(thumbnailPath), { recursive: true }); // Ensure the directory exists
                 await fs.writeFile(thumbnailPath, thumbnailBuffer);
             }
