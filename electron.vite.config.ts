@@ -7,23 +7,9 @@ export default defineConfig({
     plugins: [
       externalizeDepsPlugin({exclude: ["webdav"]})
     ],
-    build: {
-      rollupOptions: {
-        external: [
-          "sharp"
-        ]
-      }
-    }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()],
-    build: {
-      rollupOptions: {
-        external: [
-          "sharp"
-        ]
-      }
-    }
+    plugins: [externalizeDepsPlugin()]
   },
   renderer: {
     resolve: {
@@ -32,13 +18,6 @@ export default defineConfig({
         '@types': resolve('src/types')
       }
     },
-    plugins: [react()],
-    build: {
-      rollupOptions: {
-        external: [
-          "sharp"
-        ]
-      }
-    }
+    plugins: [react()]
   }
 })

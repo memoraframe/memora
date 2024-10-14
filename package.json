@@ -19,7 +19,7 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "build:linuxarm": "npm install --platform=linux --cpu=arm64 && npm install --force @img/sharp-linux-arm64 && electron-vite build && electron-builder --arm64 --linux"
+    "build:linuxarm": "npm install --cpu=arm64 --os=linux  --include=optional --libc=glibc sharp && electron-vite build && electron-builder --arm64 --linux"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
