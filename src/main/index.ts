@@ -1,17 +1,17 @@
-import { app, shell, BrowserWindow, ipcMain, protocol, nativeImage } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import fs from 'fs';
-import { fileURLToPath, format } from 'url';
+import { format } from 'url';
 import Store from 'electron-store';
 import MemoraConfig, { Transformation } from '../types/MemoraConfig'
 import cron from 'node-cron'
 import { HeadBucketCommand } from '@aws-sdk/client-s3';
 import { scheduler, thumbnailDirectory } from './scheduler';
-import { createWebdavClient } from './client/createWebdavClient';
-import { createS3Client } from './client/createS3Client';
 import { isMediaFile } from './isMedia';
+import { createS3Client } from './sync/client/createS3Client';
+import { createWebdavClient } from './sync/client/createWebdavClient';
 
 const store = new Store();
 
@@ -77,7 +77,7 @@ app.whenReady().then(() => {
   // After Start up 
   setTimeout(() => {
     scheduler(config);
-  }, 20000);
+  }, 1000);
 
 
   createWindow()

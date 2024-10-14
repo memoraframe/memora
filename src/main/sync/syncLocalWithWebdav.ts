@@ -2,7 +2,8 @@ import { WebDAVClient } from 'webdav';
 import { listLocalFiles } from './scheduler';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { log } from 'electron-log';
+import { log, error } from 'electron-log';
+import { createThumbnail } from './createThumbnail';
 
 // Type definitions
 interface FileStat {
@@ -66,20 +67,22 @@ export async function syncLocalWithWebdav(
             log(`Downloading ${webdavFilePath} to ${localFilePath}`);
             const fileData = await webdavClient.getFileContents(webdavFilePath);
 
-            // Convert fileData to Buffer if it's an ArrayBuffer
-            let dataToWrite: string | Buffer;
+            let dataToWrite: Buffer;
     
             if (fileData instanceof ArrayBuffer) {
                 dataToWrite = Buffer.from(fileData); // Convert ArrayBuffer to Buffer
-            } else if (typeof fileData === 'string') {
-                dataToWrite = fileData; // It's already a string
-            } else if (fileData instanceof Buffer) {
-                dataToWrite = fileData; // It's already a Buffer
+            } else if (typeof fileData === 'string' || fileData instanceof Buffer) {
+                dataToWrite = Buffer.from(fileData); // Ensure it's a Buffer
             } else {
-                // Handle the ResponseDataDetailed type or any other cases as needed
                 throw new Error('Unsupported file data type');
             }
-            await fs.writeFile(localFilePath, dataToWrite);
+            const thumbnail = await createThumbnail(dataToWrite);
+            if (thumbnail) {
+                await fs.writeFile(localFilePath, thumbnail);
+                log(`Thumbnail written to ${localFilePath}`);
+            } else {
+                error(`Failed to create thumbnail for ${localFilePath}`);
+            }
         }
     }
 

@@ -3,8 +3,8 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as stream from 'stream';
 import { createWriteStream } from 'fs';
-import { isMediaFile } from './isMedia';
-import { ensureTrailingSlash, listLocalFiles } from './scheduler';
+import { isMediaFile } from '../isMedia';
+import { ensureTrailingSlash, listLocalFiles } from '../scheduler';
 import { log, error } from 'electron-log';
 
 // List all objects in the S3 bucket within a specific subdirectory
