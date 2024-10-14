@@ -54,13 +54,33 @@ export class S3 extends ExternalSync {
         const response = await this.client.send(command);
         const fileStream = response.Body as stream.Readable;
     
-        const writeStream = createWriteStream(localFile);
-        fileStream.pipe(writeStream);
+        // Convert stream to buffer
+        const chunks: Buffer[] = [];
+        fileStream.on('data', (chunk) => chunks.push(chunk));
+        await new Promise<void>((resolve, reject) => {
+            fileStream.on('end', resolve);
+            fileStream.on('error', reject);
+        });
+        const fileBuffer = Buffer.concat(chunks);
     
-        // Use Promise to handle stream completion
+        // Process the buffer through ThumbnailService
+        const thumbnailBuffer = await this.thumbnailService.createThumbnail(externalFile, fileBuffer);
+    
+        if (!thumbnailBuffer) {
+            console.error("Failed to create thumbnail.");
+            return;
+        }
+    
+        // Write the thumbnail buffer to the local file
+        const writeStream = createWriteStream(localFile);
+        writeStream.write(thumbnailBuffer);
+        writeStream.end();
+    
+        // Handle stream completion
         await new Promise((resolve, reject) => {
             writeStream.on('finish', resolve);
             writeStream.on('error', reject);
         });
     }
+    
 }
