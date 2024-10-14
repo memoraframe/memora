@@ -1,56 +1,43 @@
-// import { promises as fs } from 'fs';
-// import { ensureTrailingSlash, listLocalFiles, thumbnailDirectory } from './scheduler';
-// import sharp from 'sharp';
-// import path from 'path';
-// import { log } from 'electron-log';
-// // Delay function that returns a promise that resolves after a specified duration
-// function delay(ms: number) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
+import { promises as fs } from 'fs';
+import { ensureTrailingSlash, listLocalFiles, thumbnailDirectory } from './scheduler';
+import path from 'path';
+import { log } from 'electron-log';
+import { ThumbnailService } from './thumbnailService';
+// Delay function that returns a promise that resolves after a specified duration
+function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
+// Sync local directory with S3 bucket
+export async function syncThumbnails(localDir: string): Promise<void> {
+    const thumbnailService = new ThumbnailService(true, 300, 300)
+    const localFiles = await listLocalFiles(ensureTrailingSlash(localDir));
 
-// // Create a thumbnail for a given image source
-// async function createThumbnail(src: string): Promise<Buffer | null> {
-//     try {
-//         const imageBuffer = await fs.readFile(src);
-//         const thumbnail = await sharp(imageBuffer)
-//             .resize({ width: 300, height: 300, fit: sharp.fit.inside }) 
-//             .toBuffer();
-//         return thumbnail; // Return the thumbnail buffer
-//     } catch (error) {
-//         console.error("Error processing thumbnail:", error);
-//         return null; // Return null on error
-//     }
-// }
+    for (const file of localFiles) {
+        const thumbnailPath = path.join(ensureTrailingSlash(localDir), thumbnailDirectory, file);
 
-// // Sync local directory with S3 bucket
-// export async function syncThumbnails(localDir: string): Promise<void> {
-//     const localFiles = await listLocalFiles(ensureTrailingSlash(localDir));
+        try {
+            await fs.access(thumbnailPath);
+        } catch {
+            const imageBuffer = await fs.readFile(ensureTrailingSlash(localDir) + file); // Read the file into a buffer
+            const thumbnailBuffer = await thumbnailService.createThumbnail(ensureTrailingSlash(localDir) + file, imageBuffer);
+            if (thumbnailBuffer) {
+                log("save thumbnail: " + thumbnailPath);
+                await fs.mkdir(path.dirname(thumbnailPath), { recursive: true }); // Ensure the directory exists
+                await fs.writeFile(thumbnailPath, thumbnailBuffer);
+            }
+        }
 
-//     for (const file of localFiles) {
-//         const thumbnailPath = path.join(ensureTrailingSlash(localDir), thumbnailDirectory, file);
+        // Introduce a delay of 1000 milliseconds (1 second) between thumbnail generations
+        await delay(2000); // Adjust the delay time as needed
+    }
+    // Remove thumbnails that should not be there
+    const existingThumbnails = await fs.readdir(path.join(ensureTrailingSlash(localDir), thumbnailDirectory));
+    const validThumbnailNames = localFiles.map(file => path.basename(file));
 
-//         try {
-//             await fs.access(thumbnailPath);
-//         } catch {
-//             const thumbnailBuffer = await createThumbnail(ensureTrailingSlash(localDir) + file);
-//             if (thumbnailBuffer) {
-//                 log("save thumbnail: " + thumbnailPath);
-//                 await fs.mkdir(path.dirname(thumbnailPath), { recursive: true }); // Ensure the directory exists
-//                 await fs.writeFile(thumbnailPath, thumbnailBuffer);
-//             }
-//         }
-
-//         // Introduce a delay of 1000 milliseconds (1 second) between thumbnail generations
-//         await delay(1000); // Adjust the delay time as needed
-//     }
-//     // Remove thumbnails that should not be there
-//     const existingThumbnails = await fs.readdir(path.join(ensureTrailingSlash(localDir), thumbnailDirectory));
-//     const validThumbnailNames = localFiles.map(file => path.basename(file));
-
-//     for (const thumbnail of existingThumbnails) {
-//         if (!validThumbnailNames.includes(thumbnail)) {
-//             await fs.unlink(path.join(localDir, thumbnailDirectory, thumbnail)); // Remove unwanted thumbnail
-//         }
-//     }
-// }
+    for (const thumbnail of existingThumbnails) {
+        if (!validThumbnailNames.includes(thumbnail)) {
+            await fs.unlink(path.join(localDir, thumbnailDirectory, thumbnail)); // Remove unwanted thumbnail
+        }
+    }
+}

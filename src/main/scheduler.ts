@@ -1,4 +1,4 @@
-import { log } from "electron-log";
+import { log, error } from "electron-log";
 import MemoraConfig from "../types/MemoraConfig";
 import { isImage } from "./isImage";
 import { promises as fs } from 'fs';
@@ -9,6 +9,7 @@ import { createWebdavClient } from "./sync/client/createWebdavClient";
 import { createS3Client } from "./sync/client/createS3Client";
 import { ThumbnailService } from "./thumbnailService";
 import { S3 } from "./sync/s3";
+import { syncThumbnails } from "./syncThumbnails";
 
 export const ensureTrailingSlash = (path: string) => {
   return path.endsWith('/') ? path : path + '/';
@@ -52,20 +53,22 @@ export const scheduler = async (config: MemoraConfig) => {
   }
 
   const externalFiles = await syncClient.listExternalFiles()
-  const externalFilesMap = new Set(externalFiles.map(file => path.relative(subDirectory, file)));
 
   // Get all files from local directory
   const localFilePaths = await listLocalFiles(mediaDir);
-  const localFileMap = new Set(localFilePaths.map(file => path.relative(mediaDir, file)));
 
   // Download files  that are missing locally
   for (const externalFilePath of externalFiles) {
+    const existsInLocalFile = localFilePaths.some(externalFile =>
+      externalFile.endsWith(externalFilePath)
+    );
+
     const relativePath = path.relative(subDirectory, externalFilePath);
     const localFilePath = path.join(mediaDir, relativePath);
 
     await fs.mkdir(path.dirname(localFilePath), { recursive: true });
 
-    if (!localFileMap.has(relativePath)) {
+    if(!existsInLocalFile) {
       log("Downloading file " + externalFilePath + " to " + localFilePath);
       syncClient.syncFile(externalFilePath, localFilePath)
       await delay(5000); // Delay time to fix memory hog with this
@@ -74,10 +77,20 @@ export const scheduler = async (config: MemoraConfig) => {
 
   // Remove files locally
   for (const localFilePath of localFilePaths) {
-    const relativePath = path.relative(mediaDir, localFilePath);
-    if (!externalFilesMap.has(relativePath)) {
-      log(`Removing local file ${localFilePath}`);
+    const existsInExternalFiles = externalFiles.some(externalFile =>
+      externalFile.endsWith(localFilePath)
+    );
+    if (!existsInExternalFiles) {
+      log("Unlink: " + localFilePath)
       await fs.unlink(localFilePath);
+    } else {
+      log("Keep: " + localFilePath)
     }
   }
+
+  syncThumbnails(config.mediaDirectory).then(() => {
+    log("Thumbnails finished")
+  }).catch((e) => {
+    error("Syncing thumbnails failed" + e)
+  })
 }
