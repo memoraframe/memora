@@ -1,5 +1,5 @@
 export abstract class ExternalSync {
-  constructor(public syncDir: string) {}
+  constructor() {}
 
     abstract listExternalFiles(): Promise<string[]>;
     abstract syncFile(externalFile: string, localFile: string): void;

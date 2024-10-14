@@ -9,8 +9,8 @@ export class WebDav extends ExternalSync {
     private client: WebDAVClient;
     private thumbnailService: ThumbnailService
 
-    constructor(client: WebDAVClient, syncDir: string, thumbnailService: ThumbnailService) {
-        super(syncDir);
+    constructor(client: WebDAVClient, thumbnailService: ThumbnailService) {
+        super();
         this.client = client;
         this.thumbnailService = thumbnailService
     }

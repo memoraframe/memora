@@ -1,5 +1,5 @@
 import { WebDAVClient, createClient, AuthType } from "webdav";
-import MemoraConfig from "../../types/MemoraConfig";
+import MemoraConfig from "@types/MemoraConfig";
 
 export function createWebdavClient(config: MemoraConfig): WebDAVClient {
     return createClient(config.webdavConfig.webdavEndpoint, {

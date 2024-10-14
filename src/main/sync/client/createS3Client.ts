@@ -1,5 +1,5 @@
 import { S3Client } from "@aws-sdk/client-s3";
-import MemoraConfig from "../../types/MemoraConfig";
+import MemoraConfig from "@types/MemoraConfig";
 
 export function createS3Client(config: MemoraConfig): S3Client {
     return new S3Client({
