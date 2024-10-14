@@ -31,13 +31,14 @@ export async function syncThumbnails(localDir: string): Promise<void> {
         // Introduce a delay of 1000 milliseconds (1 second) between thumbnail generations
         await delay(2000); // Adjust the delay time as needed
     }
-    // Remove thumbnails that should not be there
-    const existingThumbnails = await fs.readdir(path.join(ensureTrailingSlash(localDir), thumbnailDirectory));
-    const validThumbnailNames = localFiles.map(file => path.basename(file));
 
-    for (const thumbnail of existingThumbnails) {
-        if (!validThumbnailNames.includes(thumbnail)) {
-            await fs.unlink(path.join(localDir, thumbnailDirectory, thumbnail)); // Remove unwanted thumbnail
-        }
-    }
+    // // Remove thumbnails that should not be there
+    // const existingThumbnails = await fs.readdir(path.join(ensureTrailingSlash(localDir), thumbnailDirectory));
+    // const validThumbnailNames = localFiles.map(file => path.basename(file));
+
+    // for (const thumbnail of existingThumbnails) {
+    //     if (!validThumbnailNames.includes(thumbnail)) {
+    //         await fs.unlink(path.join(localDir, thumbnailDirectory, thumbnail)); // Remove unwanted thumbnail
+    //     }
+    // }
 }
