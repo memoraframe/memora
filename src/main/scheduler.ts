@@ -59,8 +59,8 @@ export const scheduler = async (config: MemoraConfig) => {
 
   // Download files  that are missing locally
   for (const externalFilePath of externalFiles) {
-    const existsInLocalFile = localFilePaths.some(externalFile =>
-      externalFile.endsWith(externalFilePath)
+    const existsInLocalFile = localFilePaths.some(localFile =>
+      externalFilePath.endsWith(localFile)
     );
 
     const relativePath = path.relative(subDirectory, externalFilePath);
