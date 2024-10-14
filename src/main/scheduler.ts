@@ -10,6 +10,7 @@ import { createS3Client } from "./sync/client/createS3Client";
 import { ThumbnailService } from "./thumbnailService";
 import { S3 } from "./sync/s3";
 import { syncThumbnails } from "./syncThumbnails";
+import { isMediaFile } from "./isMedia";
 
 export const ensureTrailingSlash = (path: string) => {
   return path.endsWith('/') ? path : path + '/';
@@ -59,6 +60,12 @@ export const scheduler = async (config: MemoraConfig) => {
 
   // Download files  that are missing locally
   for (const externalFilePath of externalFiles) {
+    if (!isMediaFile(externalFilePath) ) {
+      log("Skip file, not media: " + externalFilePath);
+      continue;
+    }
+
+
     const existsInLocalFile = localFilePaths.some(localFile =>
       externalFilePath.endsWith(localFile)
     );
@@ -72,6 +79,9 @@ export const scheduler = async (config: MemoraConfig) => {
       log("Downloading file " + externalFilePath + " to " + localFilePath);
       syncClient.syncFile(externalFilePath, localFilePath)
       await delay(5000); // Delay time to fix memory hog with this
+    }
+    else {
+      log("Skip file: " + externalFilePath + " to " + localFilePath);
     }
   }
 

@@ -16,6 +16,7 @@ export class ThumbnailService {
         if(!isImage(fileName)) {
             return imageBuffer;
         }
+        
 
         try {
             const thumbnail = await sharp(imageBuffer)

@@ -56,7 +56,6 @@ export class WebDav extends ExternalSync {
         const thumbnail = await this.thumbnailService.createThumbnail(externalFile, dataToWrite);
         if (thumbnail) {
             await fs.writeFile(localFile, thumbnail);
-            log(`Thumbnail written to ${localFile}`);
         } else {
             error(`Failed to create thumbnail for ${localFile}`);
         }
