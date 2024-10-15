@@ -8,6 +8,7 @@ import { error } from 'electron-log';
 import MemoraConfig, { Transformation } from '@types/MemoraConfig';
 import LoadingScreen from './LoadingScreen';
 import _ from 'lodash';
+import EmptySlideShow from './EmptySlideShow';
 
 function SlideShowScreen(): JSX.Element {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function SlideShowScreen(): JSX.Element {
     const selectedImage = queryParams.get('src'); // 'value'
     
     const [config, setConfig] = useState<MemoraConfig>();
-    const [imagePaths, setImagePaths] = useState<string[]>([]);
+    const [imagePaths, setImagePaths] = useState<string[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
   
     // UseEffect to load config
@@ -40,7 +41,7 @@ function SlideShowScreen(): JSX.Element {
                         message: 'Fetching media failed',
                         description: 'Configuration is not correct, could not read media directory',
                     });
-                    error("Could not fetch images:" + e.message);
+                    error("Could not fetch images:" + e);
                     navigate(ROUTES.SETTINGS);
                 }
             }
@@ -51,13 +52,18 @@ function SlideShowScreen(): JSX.Element {
     
 
     useEffect(() => {
-        if(imagePaths.length > 0 ){
-            setIsLoading(false);
+        if(!imagePaths) {
+            return;
         }
+
+        setIsLoading(false);
     }, [imagePaths]);
 
-    if (isLoading) {
+    if (isLoading || imagePaths == null) {
         return <LoadingScreen />;
+    }
+    if (imagePaths.length === 0 ) {
+        return <EmptySlideShow />;
     }
     
     return (
