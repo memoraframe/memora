@@ -11,6 +11,9 @@ const api = {
   connectionTestS3: (config: MemoraConfig) => ipcRenderer.invoke('connection:test:s3', config),
   connectionTestWebdav: (config: MemoraConfig) => ipcRenderer.invoke('connection:test:webdav', config),
   openDirectory: () => ipcRenderer.invoke('dialog:openDirectory'),
+  onSyncError: (callback) => ipcRenderer.on('sync:error', (_event, error) => callback(error)),
+  onSyncStart: (callback) => ipcRenderer.on('sync:start', (_event) => callback()),
+  onSyncStop: (callback) => ipcRenderer.on('sync:stop', (_event) => callback())
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -23,7 +26,6 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('env', {
       isDev: process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false
     })
-
   } catch (error) {
     console.error(error)
   }

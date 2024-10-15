@@ -1,0 +1,36 @@
+.syncing-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 256;
+  opacity: 0.5;
+  transform: translateY(0);
+}
+
+.syncing-icon {
+  animation: pulse-opacity 1s infinite;
+}
+.syncing-icon .anticon {
+  animation: custom-spin 2s infinite linear; /* Slower spin speed (1.5s instead of default) */
+}
+
+@keyframes custom-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-opacity {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

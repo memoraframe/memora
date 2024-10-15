@@ -9,6 +9,7 @@ import { Transformation } from '@types/MemoraConfig';
 import { InformationDisplay } from './InformationDisplay';
 import useSlideshowControls from './hooks/useSlideshowControls';
 import { isVideo } from '../isVideo';
+import SyncingIcon from './SyncingIcon';
 
 
 type SlideShowProps = {
@@ -121,6 +122,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
                 imageSrc={currentImage()}
                 show={showInformation}
             />
+            <SyncingIcon />
 
             <div className="carousel-container" {...handlers}>
                 <animated.div className="carousel-images"

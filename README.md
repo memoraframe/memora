@@ -91,7 +91,8 @@ To run Memora in kiosk mode on system startup:
    Environment=XAUTHORITY=/home/kiosk/.Xauthority
    Type=simple
    ExecStart=/bin/bash /home/kiosk/kiosk.sh
-   Restart=on-abort
+   Restart=always
+   RestartSec=5
    User=kiosk
    Group=kiosk
 

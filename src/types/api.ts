@@ -21,6 +21,9 @@ interface WindowApi {
     getConfig: () => Promise<MemoraConfig>;
     connectionTestS3(config: MemoraConfig): Promise<TestResult>;
     connectionTestWebdav(config: MemoraConfig): Promise<TestResult>;
+    onSyncError: (callback) => Promise<void>
+    onSyncStart: (callback) =>Promise<void>
+    onSyncStop: (callback) => Promise<void>
 }
 
 

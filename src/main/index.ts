@@ -16,7 +16,7 @@ import { createWebdavClient } from './sync/client/createWebdavClient';
 const store = new Store();
 
 var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1280,
@@ -48,6 +48,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow;
 }
 
 // This method will be called when Electron has finished
@@ -68,20 +70,21 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
 
+  const mainWindow = createWindow()
+  
+
   // Set up the cron job
   cron.schedule('0 * * * *', () => {
-    scheduler(store.get('config') as MemoraConfig)
+    scheduler(store.get('config') as MemoraConfig, mainWindow.webContents)
   });
 
   const config = store.get('config') as MemoraConfig;
   // After Start up 
   setTimeout(() => {
-    scheduler(config);
-  }, 1000);
+    scheduler(config, mainWindow.webContents);
+  }, isDev ? 1000 : 10000);
 
 
-  createWindow()
-  
   const { protocol } = require('electron');
   const fs = require('fs');
   const { fileURLToPath } = require('url');
