@@ -85,7 +85,7 @@ export const scheduler = async (config: MemoraConfig) => {
     }
   }
 
-  // Remove files locally
+  // Remove files locally 
   for (const localFilePath of localFilePaths) {
     const existsInExternalFiles = externalFiles.some(externalFile =>
       externalFile.endsWith(localFilePath)

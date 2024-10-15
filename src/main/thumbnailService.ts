@@ -7,6 +7,25 @@ export class ThumbnailService {
         this.width = width;
         this.height = height;
     }
+
+    getSharpTransformStream() {
+        return sharp().resize({ width: this.width, height: this.height, fit: sharp.fit.inside })
+    }
+
+    isThumbnailAvailable(fileName: string): boolean {
+        if (!this.enabled) {
+            return false;
+        }
+
+        // For now only images
+        if(!isImage(fileName)) {
+            return false;
+        }
+
+        return true;
+                
+    }
+
     async createThumbnail(fileName: string, imageBuffer: Buffer): Promise<Buffer | null> {
         if (!this.enabled) {
             return imageBuffer;
