@@ -5,7 +5,7 @@ import api from '@types/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTES } from '@renderer/routes';
 import { error } from 'electron-log';
-import MemoraConfig, { Transformation } from '@types/MemoraConfig';
+import MemoraConfig, { SyncActivityInformation, Transformation } from '@types/MemoraConfig';
 import LoadingScreen from './LoadingScreen';
 import _ from 'lodash';
 import EmptySlideShow from './EmptySlideShow';
@@ -67,7 +67,7 @@ function SlideShowScreen(): JSX.Element {
     }
     
     return (
-        <SlideShow images={imagePaths} selectedImage={selectedImage} showSyncActivity={config?.showSyncActivity ?? false} showProgressBar={config?.showProgressBar ?? false} transformation={config?.transformation ?? Transformation.SLIDEX} />
+        <SlideShow images={imagePaths} selectedImage={selectedImage} showSyncActivity={config?.showSyncActivity ?? SyncActivityInformation.ICONONLY} showProgressBar={config?.showProgressBar ?? false} transformation={config?.transformation ?? Transformation.SLIDEX} />
     );
 }
 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Radio, Slider, Switch } from 'antd';
-import MemoraConfig, { Transformation } from '@types/MemoraConfig';
+import MemoraConfig, { SyncActivityInformation, Transformation } from '@types/MemoraConfig';
 import api from '@types/api';
 import handleSubmit from './functions/handleSubmit';
 import handleInputChange from './functions/handleInputChange';
 import useTransformation from '../slideshow/hooks/useTransformation';
+import { InfoCircleOutlined, LoadingOutlined, PoweroffOutlined } from '@ant-design/icons';
 
 const MediaForm: React.FC = () => {
   const [config, setConfig] = useState<MemoraConfig>();
@@ -18,6 +19,11 @@ const MediaForm: React.FC = () => {
     });
   }, []);
 
+  const changeSyncInformation = (e: SyncActivityInformation) => {
+    if (config?.showSyncActivity) {
+      handleInputChange(setConfig, "showSyncActivity", e);
+    }
+  };
   const changeTransformation = (e: Transformation) => {
     if (config?.transformation) {
       handleInputChange(setConfig, "transformation", e);
@@ -29,11 +35,32 @@ const MediaForm: React.FC = () => {
   if (config?.transformation) {
     ({ getTransformationIcon, getTransformations } = useTransformation(config.transformation));
   }
+  const syncActivityInformations: SyncActivityInformation[] = [
+    SyncActivityInformation.NONE,
+    SyncActivityInformation.ICONONLY,
+    SyncActivityInformation.DESCRIPTIVE
+  ];
 
+
+  const getIconForSyncActivity = (activity: SyncActivityInformation): React.ReactNode => {
+    switch (activity) {
+      case SyncActivityInformation.ICONONLY:
+        return <>Icon</>;
+      
+      case SyncActivityInformation.DESCRIPTIVE:
+        return <>Descriptive</>;
+      
+      case SyncActivityInformation.NONE:
+      default:
+        return <>Off</>;
+    }
+  };
 
   if (loading || !config) {
     return <></>
   }
+
+  console.log(config);
 
   return (
     <div>
@@ -51,6 +78,25 @@ const MediaForm: React.FC = () => {
 
       <div style={{ marginBottom: '16px' }}>
         <label>
+          Show synchrozation feedback:<br />
+
+          <Radio.Group buttonStyle='solid' value={config.showSyncActivity} onChange={(e) => changeSyncInformation(e.target.value)}>
+          {syncActivityInformations.map((syncInformation) => (
+            <Radio.Button style={{
+              fontSize: 24,
+              paddingLeft: 20, paddingRight: 20}} 
+              key={syncInformation} 
+              value={syncInformation}
+              >
+              {getIconForSyncActivity(syncInformation)}
+            </Radio.Button>
+          ))}
+        </Radio.Group>
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '16px' }}>
+        <label>
           Show progress bar {config?.showProgressBar}<br />
           <Switch
             checkedChildren="Show"
@@ -61,17 +107,6 @@ const MediaForm: React.FC = () => {
         </label>
       </div>
 
-      <div style={{ marginBottom: '16px' }}>
-        <label>
-          Show synchrozation feedback {config?.showSyncActivity}<br />
-          <Switch
-            checkedChildren="Show"
-            unCheckedChildren="Hide"
-            checked={config.showSyncActivity}
-            onChange={(evt) => handleInputChange(setConfig, "showSyncActivity", evt)}
-          />
-        </label>
-      </div>
       
       <div style={{ marginBottom: '16px' }}>
         <label>

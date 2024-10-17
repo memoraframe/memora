@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { DownloadOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import api from '@types/api';
+import { SyncActivityInformation } from '@types/MemoraConfig';
 
 interface SyncingIconProps {
-  show: boolean;
+  show: SyncActivityInformation;
   size?: number; 
 }
 
@@ -38,7 +39,7 @@ const SyncingIcon: React.FC<SyncingIconProps> = ({ show, size = 48 }) => {
         setShowSyncInformation(false);
     });
 
-    if (!show || !showSyncInformation) {
+    if (show === SyncActivityInformation.NONE || !showSyncInformation) {
         return <></>
     }
 
@@ -47,7 +48,7 @@ const SyncingIcon: React.FC<SyncingIconProps> = ({ show, size = 48 }) => {
     <div className="syncing-icon">
         <Spin indicator={<LoadingOutlined style={{ fontSize: size }} spin />} />
     </div>
-      {currentFile && <div className={`syncing-filename ${isFadingOut ? 'fade-out' : ''}`}><DownloadOutlined /> {currentFile}</div>}
+      {currentFile && show === SyncActivityInformation.DESCRIPTIVE && <div className={`syncing-filename ${isFadingOut ? 'fade-out' : ''}`}><DownloadOutlined /> {currentFile}</div>}
     </>
 
   );

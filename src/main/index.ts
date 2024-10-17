@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import fs from 'fs';
 import { format } from 'url';
 import Store from 'electron-store';
-import MemoraConfig, { Transformation } from '../types/MemoraConfig'
+import MemoraConfig, { SyncActivityInformation, Transformation } from '../types/MemoraConfig'
 import cron from 'node-cron'
 import { HeadBucketCommand } from '@aws-sdk/client-s3';
 import { scheduler, thumbnailDirectory } from './scheduler';
@@ -161,7 +161,7 @@ const defaultConfig: MemoraConfig = {
     webdavUsername: "",
   },
   showProgressBar: false,
-  showSyncActivity: false,
+  showSyncActivity: SyncActivityInformation.ICONONLY,
   transformation: Transformation.SLIDEX
 };
 

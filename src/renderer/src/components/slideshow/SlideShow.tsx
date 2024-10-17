@@ -5,7 +5,7 @@ import Media from './Media';
 import { error } from 'electron-log';
 import SlideShowTimer from './SlideShowTimer';
 import useTransformation from './hooks/useTransformation';
-import { Transformation } from '@types/MemoraConfig';
+import { SyncActivityInformation, Transformation } from '@types/MemoraConfig';
 import { InformationDisplay } from './InformationDisplay';
 import useSlideshowControls from './hooks/useSlideshowControls';
 import { isVideo } from '../isVideo';
@@ -15,7 +15,7 @@ import SyncingIcon from './SyncingIcon';
 type SlideShowProps = {
     images: string[];
     showProgressBar: boolean;
-    showSyncActivity: boolean;
+    showSyncActivity: SyncActivityInformation;
     transformation: Transformation;
     selectedImage: string | null
 };

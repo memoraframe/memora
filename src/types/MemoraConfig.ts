@@ -24,11 +24,15 @@ interface webdavConfig {
     webdavUsername: string,
     webdavPassword: string
 }
-
+export enum SyncActivityInformation {
+    NONE = 'NONE',
+    ICONONLY = 'ICONONLY',
+    DESCRIPTIVE = 'DESCRIPTIVE'
+  }
 export default interface MemoraConfig {
     slideTimeout: number,
     showProgressBar: boolean,
-    showSyncActivity: boolean,
+    showSyncActivity: SyncActivityInformation,
     transformation: Transformation
     s3Config: s3Config,
     webdavConfig: webdavConfig,
