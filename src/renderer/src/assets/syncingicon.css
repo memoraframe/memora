@@ -34,3 +34,19 @@
     opacity: 0.5;
   }
 }
+
+.syncing-filename {
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  z-index: 256;
+  transition: opacity 1s ease-in-out;
+  opacity: 0.6;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #FFF;
+}
+
+.syncing-filename.fade-out {
+  opacity: 0;
+}

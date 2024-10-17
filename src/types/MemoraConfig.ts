@@ -28,6 +28,7 @@ interface webdavConfig {
 export default interface MemoraConfig {
     slideTimeout: number,
     showProgressBar: boolean,
+    showSyncActivity: boolean,
     transformation: Transformation
     s3Config: s3Config,
     webdavConfig: webdavConfig,

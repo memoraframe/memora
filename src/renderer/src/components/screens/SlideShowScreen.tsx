@@ -67,7 +67,7 @@ function SlideShowScreen(): JSX.Element {
     }
     
     return (
-        <SlideShow images={imagePaths} selectedImage={selectedImage} showProgressBar={config?.showProgressBar ?? false} transformation={config?.transformation ?? Transformation.SLIDEX} />
+        <SlideShow images={imagePaths} selectedImage={selectedImage} showSyncActivity={config?.showSyncActivity ?? false} showProgressBar={config?.showProgressBar ?? false} transformation={config?.transformation ?? Transformation.SLIDEX} />
     );
 }
 

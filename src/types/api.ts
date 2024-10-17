@@ -23,6 +23,8 @@ interface WindowApi {
     connectionTestWebdav(config: MemoraConfig): Promise<TestResult>;
     onSyncError: (callback) => Promise<void>
     onSyncStart: (callback) =>Promise<void>
+    onSyncDownloadStart: (callback) =>Promise<void>
+    onSyncDownloadStop: (callback) =>Promise<void>
     onSyncStop: (callback) => Promise<void>
 }
 

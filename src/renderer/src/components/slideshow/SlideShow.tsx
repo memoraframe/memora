@@ -15,11 +15,12 @@ import SyncingIcon from './SyncingIcon';
 type SlideShowProps = {
     images: string[];
     showProgressBar: boolean;
+    showSyncActivity: boolean;
     transformation: Transformation;
     selectedImage: string | null
 };
 
-const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transformation, selectedImage }) => {
+const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, showSyncActivity, transformation, selectedImage }) => {
     // ensure errors are not here.
     if (images.length == 0) {
         return <></>
@@ -122,7 +123,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, transfor
                 imageSrc={currentImage()}
                 show={showInformation}
             />
-            <SyncingIcon />
+            <SyncingIcon show={showSyncActivity} />
 
             <div className="carousel-container" {...handlers}>
                 <animated.div className="carousel-images"

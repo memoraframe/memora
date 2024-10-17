@@ -13,7 +13,9 @@ const api = {
   openDirectory: () => ipcRenderer.invoke('dialog:openDirectory'),
   onSyncError: (callback) => ipcRenderer.on('sync:error', (_event, error) => callback(error)),
   onSyncStart: (callback) => ipcRenderer.on('sync:start', (_event) => callback()),
-  onSyncStop: (callback) => ipcRenderer.on('sync:stop', (_event) => callback())
+  onSyncStop: (callback) => ipcRenderer.on('sync:stop', (_event) => callback()),
+  onSyncDownloadStart: (callback) => ipcRenderer.on('sync:download:start', (_event, src) => callback(src)),
+  onSyncDownloadStop: (callback) => ipcRenderer.on('sync:download:stop', (_event, src) => callback(src))
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

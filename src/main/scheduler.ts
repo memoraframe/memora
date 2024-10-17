@@ -80,8 +80,10 @@ export const scheduler = async (config: MemoraConfig, webContents: WebContents) 
       await fs.mkdir(path.dirname(localFilePath), { recursive: true });
 
       if (!existsInLocalFile) {
+        webContents.send('sync:download:start', externalFilePath);
         log("Downloading file " + externalFilePath + " to " + localFilePath);
         await syncClient.syncFile(externalFilePath, localFilePath);
+        webContents.send('sync:download:stop', externalFilePath);
         await delay(5000); // Delay time to fix memory hog with this
       } else {
         log("Skip file: " + externalFilePath + " to " + localFilePath);

@@ -63,6 +63,18 @@ const MediaForm: React.FC = () => {
 
       <div style={{ marginBottom: '16px' }}>
         <label>
+          Show synchrozation feedback {config?.showSyncActivity}<br />
+          <Switch
+            checkedChildren="Show"
+            unCheckedChildren="Hide"
+            checked={config.showSyncActivity}
+            onChange={(evt) => handleInputChange(setConfig, "showSyncActivity", evt)}
+          />
+        </label>
+      </div>
+      
+      <div style={{ marginBottom: '16px' }}>
+        <label>
           Slide duration (seconds): {config?.slideTimeout}
           <Slider
             min={5}

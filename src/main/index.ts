@@ -161,6 +161,7 @@ const defaultConfig: MemoraConfig = {
     webdavUsername: "",
   },
   showProgressBar: false,
+  showSyncActivity: false,
   transformation: Transformation.SLIDEX
 };
 
