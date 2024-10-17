@@ -45,6 +45,7 @@
   margin-top: 8px;
   font-size: 14px;
   color: #FFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Adds shadow under the text */
 }
 
 .syncing-filename.fade-out {
