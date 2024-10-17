@@ -74,20 +74,21 @@ export const scheduler = async (config: MemoraConfig, webContents: WebContents) 
         externalFilePath.endsWith(localFile)
       );
 
-      const relativePath = path.relative(subDirectory, externalFilePath);
-      const localFilePath = path.join(mediaDir, relativePath);
-
-      await fs.mkdir(path.dirname(localFilePath), { recursive: true });
-
       if (!existsInLocalFile) {
         webContents.send('sync:download:start', externalFilePath);
+        
+        const relativePath = path.relative(subDirectory, externalFilePath);
+        const localFilePath = path.join(mediaDir, relativePath);
+        
         log("Downloading file " + externalFilePath + " to " + localFilePath);
+
+        await fs.mkdir(path.dirname(localFilePath), { recursive: true });
         await syncClient.syncFile(externalFilePath, localFilePath);
         webContents.send('sync:download:stop', externalFilePath);
         await delay(5000); // Delay time to fix memory hog with this
       } else {
-        log("Skip file: " + externalFilePath + " to " + localFilePath);
-        await delay(500); // Delay time otherwise cpu spikes
+        log("Skip file: " + externalFilePath);
+        await delay(250); // Delay time otherwise cpu spikes
       }
     }
 
