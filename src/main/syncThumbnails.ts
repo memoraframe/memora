@@ -28,8 +28,7 @@ export async function syncThumbnails(localDir: string): Promise<void> {
             }
         }
 
-        // Introduce a delay of 1000 milliseconds (1 second) between thumbnail generations
-        await delay(5000); // Adjust the delay time as needed
+        await delay(5000); 
     }
 
     // // Remove thumbnails that should not be there

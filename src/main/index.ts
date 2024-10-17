@@ -12,10 +12,15 @@ import { scheduler, thumbnailDirectory } from './scheduler';
 import { isMediaFile } from './isMedia';
 import { createS3Client } from './sync/client/createS3Client';
 import { createWebdavClient } from './sync/client/createWebdavClient';
+import log from 'electron-log';
 
 const store = new Store();
 
 var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
+
+log.transports.file.level = false;
+log.transports.console.level = isDev ? 'info' : 'warn';
+
 function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({

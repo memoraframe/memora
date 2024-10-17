@@ -1,6 +1,5 @@
 import { log, error } from "electron-log";
 import MemoraConfig from "../types/MemoraConfig";
-import { isImage } from "./isImage";
 import { promises as fs } from 'fs';
 import { WebDav } from "./sync/webdav";
 
@@ -28,7 +27,7 @@ export async function listLocalFiles(localDir: string): Promise<string[]> {
     encoding: 'utf8',
   }))
     .filter(f => !f.startsWith(thumbnailDirectory))
-    .filter(f => isImage(f))
+    .filter(f => isMediaFile(f))
 }
 
 
@@ -70,17 +69,16 @@ export const scheduler = async (config: MemoraConfig, webContents: WebContents) 
         continue;
       }
 
-      const existsInLocalFile = localFilePaths.some(localFile =>
+      const existsInLocalFile = localFilePaths.some(localFile => 
         externalFilePath.endsWith(localFile)
       );
 
       if (!existsInLocalFile) {
         webContents.send('sync:download:start', externalFilePath);
-        
         const relativePath = path.relative(subDirectory, externalFilePath);
         const localFilePath = path.join(mediaDir, relativePath);
         
-        log("Downloading file " + externalFilePath + " to " + localFilePath);
+        log("Downloading file " + externalFilePath);
 
         await fs.mkdir(path.dirname(localFilePath), { recursive: true });
         await syncClient.syncFile(externalFilePath, localFilePath);
@@ -88,7 +86,6 @@ export const scheduler = async (config: MemoraConfig, webContents: WebContents) 
         await delay(5000); // Delay time to fix memory hog with this
       } else {
         log("Skip file: " + externalFilePath);
-        await delay(250); // Delay time otherwise cpu spikes
       }
     }
 
