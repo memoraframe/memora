@@ -1,8 +1,6 @@
 # Memora: Open Source Digital Photoframe
 
-![Memora Logo](https://example.com/path/to/your/logo.png)
-
-Memora is an open-source digital photoframe software designed to run on Linux systems. 
+Memora is an open-source digital photoframe software designed to run on arm linux systems like the RPi 4 / 5. 
 The name "Memora" blends the words "memory" and "ora" (from the Latin word "orare," meaning "to speak"), embodying the idea that the memories displayed on this frame speak to you.
 
 ## Table of Contents
@@ -23,21 +21,22 @@ The name "Memora" blends the words "memory" and "ora" (from the Latin word "orar
 - Supports both image and video playback
 - Auto-play functionality for videos
 - Easy installation via .deb package
+- Automatically scale for images on 1280x800, configurable resolution is a todo, could adjust index.ts for now.
 
 ## Requirements
 
-- Linux-based operating system
+- Linux arm-based operating system
 - Offline mode possible via local storage
 - Internet connection for photo synchronization via S3 or Webdav
 - S3 bucket or WebDAV server (e.g., Nextcloud) for photo storage
 
 ## Installation
 
-1. Download the latest .deb file from the [releases page](https://github.com/yourusername/memora/releases).
+1. Download the latest .deb file from the [releases page](https://github.com/memoraframe/memora/releases).
 2. Install the package using your system's package manager:
 
    ```
-   sudo dpkg -i memora_version_amd64.deb
+   sudo dpkg -i memora_version_arm64.deb
    ```
 
    Replace `version` with the actual version number of the downloaded file.
