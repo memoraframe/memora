@@ -1,0 +1,46 @@
+name: Release memora
+
+on: 
+  push:
+    tags:
+    - '*'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+  
+      steps:
+        # Step 1: Checkout the repository
+        - name: Checkout repository
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0 
+  
+        # Step 2: Set up Node.js
+        - name: Set up Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18.x  
+  
+        - name: Install dependencies
+          run: npm install
+  
+        - name: Update version
+          run: |
+            NEW_VERSION="0.0.$(git rev-list --count HEAD)"
+            npm version $NEW_VERSION --no-git-tag-version
+  
+        - name: Build for Linux ARM64
+          run: npm run build:linuxarm
+  
+        - uses: ncipollo/release-action@v1
+          with:
+            artifacts: "dist/*.deb"
+            body: ${{ github.event.head_commit.message }}
+            name: "Memora"
+            tag: nightly-${{ github.sha }}
+  
+  

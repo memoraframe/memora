@@ -8,35 +8,25 @@ on:
 jobs:
   build-linux-arm:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x  
 
-      - name: Install dependencies
-        run: npm install
+      # - name: Install dependencies
+        # run: npm run lint
 
-      - name: Update version
+      - name: Push Git Tag
         run: |
           NEW_VERSION="0.0.$(git rev-list --count HEAD)"
           npm version $NEW_VERSION --no-git-tag-version
-
-      - name: Build for Linux ARM64
-        run: npm run build:linuxarm
-
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: "dist/*.deb"
-
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag $NEW_VERSION
+          git push origin $NEW_VERSION
