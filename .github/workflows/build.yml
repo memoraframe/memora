@@ -9,6 +9,9 @@ jobs:
   build-linux-arm:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
@@ -33,29 +36,7 @@ jobs:
       - name: Build for Linux ARM64
         run: npm run build:linuxarm
 
-      # - name: Archive build output
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: linux-arm64-build
-      #     path: dist/  # Specify the output directory of the build
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dist/*.deb"
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.sha }}
-      #     release_name: "Linux ARM64 Build"
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload Release Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: dist/*.AppImage  # Adjust to your specific build output format
-      #     asset_name: app-linux-arm64.AppImage  # Adjust to your desired file name
-      #     asset_content_type: application/octet-stream
