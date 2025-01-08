@@ -26,17 +26,16 @@ jobs:
         run: |
           echo "NEW_VERSION=0.0.$(git rev-list --count HEAD)" >> $GITHUB_ENV
 
-      - name: Push Version Tags
-        uses: ovsds/push-version-tags-action@v1
-        with:
-          version: ${{ env.NEW_VERSION }}
+      # - name: Push Version Tags
+      #   uses: ovsds/push-version-tags-action@v1
+      #   with:
+      #     version: ${{ env.NEW_VERSION }}
 
-          
-      # - name: Push Git Tag
-      #   run: |
-      #     NEW_VERSION="0.0.$(git rev-list --count HEAD)"
-      #     npm version $NEW_VERSION --no-git-tag-version
-      #     git config user.name "GitHub Actions"
-      #     git config user.email "github-actions@users.noreply.github.com"
-      #     git tag $NEW_VERSION
-      #     git push origin $NEW_VERSION
+      - name: Push Git Tag
+        run: |
+          NEW_VERSION="0.0.$(git rev-list --count HEAD)"
+          npm version $NEW_VERSION --no-git-tag-version
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag $NEW_VERSION
+          git push origin $NEW_VERSION
