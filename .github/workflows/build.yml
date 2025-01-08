@@ -21,18 +21,17 @@ jobs:
         with:
           node-version: 18.x  
 
-  
       - name: Update version
+        id: set_version
         run: |
-          NEW_VERSION="0.0.$(git rev-list --count HEAD)"
+          echo "NEW_VERSION=0.0.$(git rev-list --count HEAD)" >> $GITHUB_ENV
 
-      # - name: Install dependencies
-        # run: npm run lint
       - name: Push Version Tags
         uses: ovsds/push-version-tags-action@v1
         with:
-          version: ${{ NEW_VERSION }}
+          version: ${{ env.NEW_VERSION }}
 
+          
       # - name: Push Git Tag
       #   run: |
       #     NEW_VERSION="0.0.$(git rev-list --count HEAD)"
