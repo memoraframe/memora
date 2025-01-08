@@ -125,8 +125,4 @@ We welcome contributions to Memora! Please follow these steps:
 
 ## License
 
-Memora is released under the [MIT License](https://opensource.org/licenses/MIT).
-
----
-
-For more information, please visit our [GitHub repository](https://github.com/yourusername/memora) or contact us at support@memora.app.
+Memora is released under the [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
