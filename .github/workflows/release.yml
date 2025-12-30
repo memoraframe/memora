@@ -38,7 +38,7 @@ jobs:
           run: |
             TAG_VERSION="${{ github.event.inputs.tag }}"
             echo "Using tag: $TAG_VERSION"
-            echo $TAG_VERSION >> $GITHUB_ENV
+            echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
             npm version "$TAG_VERSION" --no-git-tag-version
   
         - name: Build for Linux ARM64
