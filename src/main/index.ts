@@ -1,9 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, protocol } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import fs from 'fs';
-import { format } from 'url';
+import { fileURLToPath, format } from 'url';
 import Store from 'electron-store';
 import MemoraConfig, { SyncActivityInformation, Transformation } from '../types/MemoraConfig'
 import cron from 'node-cron'
@@ -91,11 +91,6 @@ app.whenReady().then(() => {
     scheduler(config, mainWindow.webContents);
   }, isDev ? 1000 : 10000);
 
-
-  const { protocol } = require('electron');
-  const fs = require('fs');
-  const { fileURLToPath } = require('url');
-  
   protocol.handle("thum", async (request) => {
     const fileUrl = request.url.replace("thum://", "file://");
     const filePath = fileURLToPath(fileUrl); 
