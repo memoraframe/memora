@@ -1,7 +1,7 @@
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge, ipcRenderer } from 'electron';
 import MemoraConfig from '../types/MemoraConfig';
-import 'electron-log/preload'
+import 'electron-log/preload.js'
 
 // Custom APIs for renderer
 const api = {

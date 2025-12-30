@@ -1,7 +1,8 @@
 import { FileStat, WebDAVClient } from "webdav";
 import { ExternalSync } from "./externalSync";
 import * as path from 'path';
-import { error } from 'electron-log';
+import electronLog from 'electron-log';
+const { error } = electronLog;
 import fs from 'fs'; 
 import { ThumbnailService } from "../thumbnailService";
 import { pipeline } from 'stream/promises';

@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
 import { ensureTrailingSlash, listLocalFiles, thumbnailDirectory } from './scheduler';
 import path from 'path';
-import { log } from 'electron-log';
+import electronLog from 'electron-log';
+const { log } = electronLog;
 import { ThumbnailService } from './thumbnailService';
 // Delay function that returns a promise that resolves after a specified duration
 function delay(ms: number) {

@@ -1,4 +1,5 @@
-import { log, error } from "electron-log";
+import electronLog from "electron-log";
+const { log, error } = electronLog;
 import MemoraConfig from "../types/MemoraConfig";
 import { promises as fs } from 'fs';
 import { WebDav } from "./sync/webdav";
