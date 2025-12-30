@@ -33,7 +33,7 @@ export async function listLocalFiles(localDir: string): Promise<string[]> {
 
 export const scheduler = async (config: MemoraConfig, webContents: WebContents) => {
   // Nothing configured to schedule.
-  if (!config.webdavConfig.webdavEnabled && !config.s3Config.s3Enabled) {
+  if ((!config.webdavConfig || !config.webdavConfig.webdavEnabled) && (!config.s3Config || !config.s3Config.s3Enabled)) {
     return;
   }
 

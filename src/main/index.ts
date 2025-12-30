@@ -80,11 +80,13 @@ app.whenReady().then(() => {
 
   // Set up the cron job
   cron.schedule('0 * * * *', () => {
-    scheduler(store.get('config') as MemoraConfig, mainWindow.webContents)
+    const storedConfig = store.get('config', {}) as Partial<MemoraConfig>;
+    scheduler(mergeConfigWithDefaults(storedConfig), mainWindow.webContents)
   });
 
-  const config = store.get('config') as MemoraConfig;
-  // After Start up 
+  const storedConfig = store.get('config', {}) as Partial<MemoraConfig>;
+  const config = mergeConfigWithDefaults(storedConfig);
+  // After Start up
   setTimeout(() => {
     scheduler(config, mainWindow.webContents);
   }, isDev ? 1000 : 10000);
@@ -170,9 +172,8 @@ const defaultConfig: MemoraConfig = {
   transformation: Transformation.SLIDEX
 };
 
-ipcMain.handle('getConfig', async (_event) => {
-  const storedConfig = store.get('config', {}) as Partial<MemoraConfig>;
-  const config: MemoraConfig = {
+const mergeConfigWithDefaults = (storedConfig: Partial<MemoraConfig>): MemoraConfig => {
+  return {
     ...defaultConfig,
     ...storedConfig,
     s3Config: {
@@ -184,8 +185,11 @@ ipcMain.handle('getConfig', async (_event) => {
       ...(storedConfig.webdavConfig || {})
     }
   };
+};
 
-  return config;
+ipcMain.handle('getConfig', async (_event) => {
+  const storedConfig = store.get('config', {}) as Partial<MemoraConfig>;
+  return mergeConfigWithDefaults(storedConfig);
 });
 
 // IPC Handler to get image paths
