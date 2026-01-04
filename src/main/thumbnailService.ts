@@ -33,7 +33,7 @@ export class ThumbnailService {
 
         // For now only images
         if(!isImage(fileName)) {
-            return imageBuffer;
+            return null;
         }
         
 

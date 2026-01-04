@@ -38,13 +38,9 @@ const Image: React.FC<ImageProps> = ({ src, alt, onError, loadMedia }) => {
         };
     }, [src, loadMedia]);
 
-    return (
-        <>
-            {<img 
-            src={loaded ? src : ''}
-            alt={alt} className="carousel-image" />}
-        </>
-    );
+    if (!loaded) return null;
+
+    return <img src={src} alt={alt} className="carousel-image" />;
 };
 
 export default Image;
