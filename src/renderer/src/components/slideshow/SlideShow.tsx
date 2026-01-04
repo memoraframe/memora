@@ -114,7 +114,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ images, showProgressBar, showSync
     });
 
     function currentImage(): string {
-        return images[currentIndex + 1];
+        return images[currentIndex + 1] ?? "";
     }
 
     return (
