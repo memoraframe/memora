@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { notification } from "antd";
 import SlideShow from '../slideshow/SlideShow';
 import api from '@types/api';
