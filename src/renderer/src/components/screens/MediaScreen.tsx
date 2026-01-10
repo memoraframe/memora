@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, notification } from 'antd';
+import { Card, Row, Col } from 'antd';
 import api from '@types/api';
 import MemoraConfig from '@types/MemoraConfig';
 import { isDirectory } from '../isDirectory';
@@ -197,6 +197,7 @@ const ImageWithPlaceholder = ({ src, alt }) => {
       className='media-item'
         src={src} 
         alt={alt} 
+
         onError={(e) => { e.target.onerror = null; e.target.src = placeholderImage; }} 
       />
     );
